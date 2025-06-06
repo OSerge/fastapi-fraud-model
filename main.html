@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Проектный практикум</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        code {
+            background-color: #f8f8f8;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="API для предсказания мошеннических транзакций с использованием модели RandomForestClassifier.">
+    <meta name="keywords" content="API, fraud detection, machine learning, RandomForest, FastAPI">
+    <meta name="author" content="Serge Podkolzin ">
+</head>
+<body>
+    <h1>Добро пожаловать!</h1>
+    <p>Это API для предсказания мошеннических транзакций. За предсказания отвечает модель RandomForest.</p>
+    <p> Используйте <a href="http://localhost:8000/docs">OpenAPI (Swagger UI)</a> для удобной загрузки файлов с датасетами.</p>
+    <p>Используйте <code>/predict</code> для отправки CSV-файла с транзакциями.</p>
+    <p>Пример запроса:</p>
+    <pre>
+curl -X POST "http://localhost:8000/predict" -F "file=@your_file.csv"</pre>
+    <p>Пример ответа:</p>
+    <pre>
+{
+    "predictions": [
+        {
+            "id": 1,
+            "is_fraud": false,
+            "fraud_probability": 0.01,
+            "fraud_risk": "low"
+        },
+        {
+            "id": 2,
+            "is_fraud": true,
+            "fraud_probability": 0.85,
+            "fraud_risk": "high"
+        }
+    ]
+}
+    </pre>
+    <p>Для получения списка обязательных признаков используйте <code>/required-features</code>.</p>
+</body>
+</html>
