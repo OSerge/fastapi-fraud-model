@@ -45,7 +45,6 @@ def validate_dataframe(df: pd.DataFrame) -> None:
         )
     
 def prepare(df: pd.DataFrame) -> pd.DataFrame:
-    # Если 'id' нет — создаём
     if 'id' not in df.columns:
         df = df.copy()
         df['id'] = range(1, len(df) + 1)
@@ -62,7 +61,7 @@ def prepare(df: pd.DataFrame) -> pd.DataFrame:
         )
 
     result = pd.DataFrame(scaled_data, columns=scaling_data.columns)
-    result.insert(0, 'id', ids.values)  # modifies result in place
+    result.insert(0, 'id', ids.values)
     return result
 
 
@@ -77,80 +76,9 @@ def calculate_risk_level(probability: float) -> str:
     
 @app.get("/")
 async def main():
-    html_content = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Проектный практикум</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #555;
-        }
-        pre {
-            background-color: #f8f8f8;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        code {
-            background-color: #f8f8f8;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="API для предсказания мошеннических транзакций с использованием модели RandomForestClassifier.">
-    <meta name="keywords" content="API, fraud detection, machine learning, RandomForest, FastAPI">
-    <meta name="author" content="Serge Podkolzin ">
-</head>
-<body>
-    <h1>Добро пожаловать!</h1>
-    <p>Это API для предсказания мошеннических транзакций. За предсказания отвечает модель RandomForest.</p>
-    <p> Используйте <a href="http://localhost:8000/docs">OpenAPI (Swagger UI)</a> для удобной загрузки файлов с датасетами.</p>
-    <p>Используйте <code>/predict</code> для отправки CSV-файла с транзакциями.</p>
-    <p>Пример запроса:</p>
-    <pre>
-curl -X POST "http://localhost:8000/predict" -F "file=@your_file.csv"</pre>
-    <p>Пример ответа:</p>
-    <pre>
-{
-    "predictions": [
-        {
-            "id": 1,
-            "is_fraud": false,
-            "fraud_probability": 0.01,
-            "fraud_risk": "low"
-        },
-        {
-            "id": 2,
-            "is_fraud": true,
-            "fraud_probability": 0.85,
-            "fraud_risk": "high"
-        }
-    ]
-}
-    </pre>
-    <p>Для получения списка обязательных признаков используйте <code>/required-features</code>.</p>
-</body>
-</html>
-"""
+    """Главная страница приложения"""
+    with open("main.html", "r", encoding="utf-8") as file:
+        html_content = file.read()
     return HTMLResponse(content=html_content)
 
 @app.post("/predict", response_model=BatchPredictionResponse)
@@ -160,7 +88,6 @@ async def predict_transactions(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Only CSV files are supported")
 
     try:
-        # Чтение CSV
         contents = await file.read()
         data = pd.read_csv(io.StringIO(contents.decode('utf-8')))
         
@@ -168,22 +95,15 @@ async def predict_transactions(file: UploadFile = File(...)):
         validate_dataframe(data)
         data = prepare(data)
         
-        # Если нет колонки 'id', создаем ее
-        # if 'id' not in data.columns:
-        #     data['id'] = range(1, len(data)+1)
-
-        # Выбираем только нужные признаки
         features = data[REQUIRED_FEATURES]
-        
-        # Предсказание
+
         probabilities = model.predict_proba(features)[:, 1]
         
-        # Формирование результатов
         predictions = []
         for idx, prob in enumerate(probabilities):
             predictions.append({
                 "id": int(data['id'].iloc[idx]),
-                "is_fraud": bool(prob > 0.5),  # Порог можно настроить
+                "is_fraud": bool(prob > 0.5),  # Порог 0.5 для определения мошенничества
                 "fraud_probability": float(prob),
                 "fraud_risk": calculate_risk_level(prob)
             })
@@ -191,7 +111,7 @@ async def predict_transactions(file: UploadFile = File(...)):
         return {"predictions": predictions}
 
     except HTTPException:
-        raise  # Перебрасываем уже обработанные ошибки
+        raise
     except pd.errors.EmptyDataError:
         raise HTTPException(status_code=400, detail="The CSV file is empty")
     except Exception as e:
