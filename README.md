@@ -5,11 +5,11 @@ Simple FastAPI app to upload the credit card `.csv` dataset and predict fraud tr
 
 1. Склонируйте проект: `git clone https://github.com/OSerge/fastapi-fraud-model.git`
 2. Перейдите в директорию проекта: `cd fastapi-fraud-model/`
-3. Соберите docker-образ: `docker build -t fastapi-fraud-model .`
-4. Запустите его: `docker run --rm -p 8000:8000 fastapi-fraud-model`
-5. Перейдите на главную страницу `http://localhost:8000/` с краткими пояснениями по работе сервиса.
-6. Для загрузки файла с тестовым датасетом (например, `test_100.csv`) используйте Swagger UI по адресу `http://localhost:8000/docs#/default/predict_transactions_predict_post`
-7. Можно также загрузить файл из консоли: 
+3. Запуск docker-образов с их сборкой: `docker-compose up --build`. После корректной сборки можно запускать с помощью `docker-compose up -d`.
+4. После этого будут доступны сервисы:
+    * `http://localhost:8000/` - главная страница (FastAPI) с краткими пояснениями по работе сервиса.
+    * `http://localhost:8501/` - Streamlit App для удобной загрузки файлов `.csv` с датасетами.
+5. Можно также загрузить файл из консоли: 
 ```
 curl -X 'POST' \
   'http://127.0.0.1:8000/predict' \
