@@ -1,5 +1,7 @@
-# fastapi-fraud-model
-Simple FastAPI app to upload the credit card `.csv` dataset and predict fraud transactions.
+# FastAPI Fraud Detection Model
+Simple FastAPI / Streamlit app to upload the credit card `.csv` dataset and predict fraud transactions.
+The original datasets used for training and prediction are located here - `https://www.kaggle.com/competitions/playground-series-s3e4/data`.
+Under the hood, the `RandomForestClassifier` model is used.
 
 ## Использование
 
