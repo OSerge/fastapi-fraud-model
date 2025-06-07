@@ -11,9 +11,7 @@ RUN pip install --no-cache-dir \
 
 WORKDIR /app
 
-COPY main.py /app/main.py
-COPY fraud_model.joblib /app/fraud_model.joblib
-COPY scaler.joblib /app/scaler.joblib
+COPY *.py *.html *.joblib ./
 
 EXPOSE 8000
 
