@@ -42,9 +42,10 @@
 </head>
 <body>
     <h1>Добро пожаловать!</h1>
-    <p>Это API для предсказания мошеннических транзакций. За предсказания отвечает модель RandomForest.</p>
-    <p> Используйте <a href="http://localhost:8000/docs">OpenAPI (Swagger UI)</a> для удобной загрузки файлов с датасетами.</p>
-    <p>Используйте <code>/predict</code> для отправки CSV-файла с транзакциями.</p>
+    <p>Это API для предсказания мошеннических транзакций. За предсказания отвечает модель RandomForestClassifier.</p>
+    <p>Вы можете использовать <a href="http://localhost:8501" target="_blank">Streamlit App</a> для удобной загрузки файлов с датасетами,</p>
+    <p>а также <a href="http://localhost:8000/docs" target="_blank">OpenAPI (Swagger UI)</a> как для загрузки файлов, так и для изучения API.</p>
+    <p>В консольном режиме используйте <code>/predict</code> для отправки CSV-файла с транзакциями.</p>
     <p>Пример запроса:</p>
     <pre>
 curl -X POST "http://localhost:8000/predict" -F "file=@your_file.csv"</pre>
@@ -67,6 +68,5 @@ curl -X POST "http://localhost:8000/predict" -F "file=@your_file.csv"</pre>
     ]
 }
     </pre>
-    <p>Для получения списка обязательных признаков используйте <code>/required-features</code>.</p>
 </body>
 </html>
